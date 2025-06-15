@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
+import { verifyAuth } from '~/lib/auth';
 
 export async function GET(request: Request) {
   const apiKey = process.env.NEYNAR_API_KEY;
-  const { searchParams } = new URL(request.url);
-  const fid = searchParams.get('fid');
-  
+
+  const fid = await verifyAuth(request);
+  if (!fid) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   if (!apiKey) {
     return NextResponse.json(
       { error: 'Neynar API key is not configured. Please add NEYNAR_API_KEY to your environment variables.' },

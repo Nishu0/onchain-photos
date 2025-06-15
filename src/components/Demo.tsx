@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -38,7 +37,6 @@ export default function Demo(
 ) {
   const { isSDKLoaded, context, added, notificationDetails, actions } =
     useMiniApp();
-  const [isContextOpen, setIsContextOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>("home");
   const [txHash, setTxHash] = useState<string | null>(null);
   const [sendNotificationResult, setSendNotificationResult] = useState("");
@@ -185,10 +183,6 @@ export default function Demo(
       primaryType: "Message",
     });
   }, [chainId, signTypedData]);
-
-  const toggleContext = useCallback(() => {
-    setIsContextOpen((prev) => !prev);
-  }, []);
 
   if (!isSDKLoaded) {
     return <div>Loading...</div>;
