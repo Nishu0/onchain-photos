@@ -280,8 +280,10 @@ export default function Demo(
 
         {activeTab === "context" && (
           <div className="mx-6">
-            <h2 className="text-lg font-semibold mb-2">Context</h2>
-            <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+            <h2 className="text-lg font-semibold mb-2 text-foreground">
+              Context
+            </h2>
+            <div className="p-4 bg-card text-card-foreground rounded-lg border border-border">
               <pre className="font-mono text-xs whitespace-pre-wrap break-words w-full">
                 {JSON.stringify(context, null, 2)}
               </pre>
