@@ -3,7 +3,7 @@ import { sdk } from '@farcaster/frame-sdk';
 
 const quickAuth = createClient();
 
-export async function verifyAuth(request: Request): Promise<{ fid: number } | null> {
+export async function verifyAuth(request: Request): Promise<number | null> {
     const auth = request.headers.get('authorization');
     if (!auth?.startsWith('Bearer ')) return null;
 
@@ -13,7 +13,7 @@ export async function verifyAuth(request: Request): Promise<{ fid: number } | nu
             domain: (new URL(process.env.NEXT_PUBLIC_URL!)).hostname
         });
 
-        return { fid: Number(payload.sub) };
+        return Number(payload.sub);
     } catch (error) {
         console.error('Auth verification failed:', error);
         return null;
@@ -40,4 +40,31 @@ export async function getUserInfo(fid: number) {
 }
 
 // Helper function to make authenticated requests
-export const fetchWithAuth = sdk.quickAuth.fetch; 
+export async function fetchWithAuth(url: string, options?: RequestInit) {
+    try {
+        // Ensure SDK is initialized
+        if (!sdk.quickAuth) {
+            throw new Error('QuickAuth SDK not initialized');
+        }
+
+        // If options include a body, ensure Content-Type is set
+        if (options?.body && !options.headers) {
+            options.headers = {
+                'Content-Type': 'application/json',
+            };
+        }
+
+        // Make the request
+        const response = await sdk.quickAuth.fetch(url, options);
+
+        // Handle non-OK responses
+        if (!response.ok) {
+            throw new Error(`Request failed with status ${response.status}`);
+        }
+
+        return response;
+    } catch (error) {
+        console.error('fetchWithAuth error:', error);
+        throw error; // Re-throw to let the caller handle it
+    }
+}

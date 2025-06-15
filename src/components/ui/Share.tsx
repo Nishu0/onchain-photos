@@ -5,6 +5,7 @@ import { Button } from "./Button";
 import { useMiniApp } from "@neynar/react";
 import { type ComposeCast } from "@farcaster/frame-sdk";
 import { fetchWithAuth } from "~/lib/auth";
+
 interface EmbedConfig {
   path?: string;
   url?: string;
@@ -40,11 +41,20 @@ export function ShareButton({
   useEffect(() => {
     if (cast.bestFriends && context?.user?.fid) {
       setIsLoadingBestFriends(true);
-      fetchWithAuth(`/api/best-friends?fid=${context.user.fid}`)
-        .then((res) => res.json())
-        .then((data) => setBestFriends(data.bestFriends))
-        .catch((err) => console.error("Failed to fetch best friends:", err))
-        .finally(() => setIsLoadingBestFriends(false));
+      console.log("HIT API Fetching best friends");
+
+      const fetchBestFriends = async () => {
+        try {
+          const response = await fetchWithAuth(`/api/best-friends`);
+          const data = await response.json();
+          setBestFriends(data.bestFriends);
+        } catch (err) {
+          console.error("Failed to fetch best friends:", err);
+        } finally {
+          setIsLoadingBestFriends(false);
+        }
+      };
+      fetchBestFriends();
     }
   }, [cast.bestFriends, context?.user?.fid]);
 
