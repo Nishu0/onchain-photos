@@ -127,3 +127,21 @@ npm run build
 ```
 
 The above command will generate a `.env` file based on the `.env.local` file and user input. Be sure to configure those environment variables on your hosting platform.
+
+## Building with AI
+
+AI guide for FC Mini Apps SDK - https://miniapps.farcaster.xyz/docs/getting-started#building-with-ai
+
+AI guide for Neynar - https://docs.neynar.com/docs/neynar-farcaster-with-cursor
+
+## Why MiniApps?
+
+Lets u open Apps inside social feed.
+Leverage and build on social Data so add social component to make your app viral.
+Send Notifications to retain the users.
+
+Simple flow
+
+- Build your simple App just like u bulid webapps
+- Wrap it inside the NeynarProvider (FrameContext) to get the context of the user [username, fid, walletadd, pfp and with fid his entire social graph]
+- Access the inbuilt Farcaster Wallet for any onchain activity
