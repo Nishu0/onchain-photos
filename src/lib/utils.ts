@@ -3,6 +3,11 @@ import { twMerge } from 'tailwind-merge';
 import { APP_BUTTON_TEXT, APP_DESCRIPTION, APP_ICON_URL, APP_NAME, APP_OG_IMAGE_URL, APP_PRIMARY_CATEGORY, APP_SPLASH_BACKGROUND_COLOR, APP_TAGS, APP_URL, APP_WEBHOOK_URL } from './constants';
 import { APP_SPLASH_URL } from './constants';
 
+export function trimAddress(address: string) {
+  if (!address) return address;
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+}
+
 interface FrameMetadata {
   version: string;
   name: string;

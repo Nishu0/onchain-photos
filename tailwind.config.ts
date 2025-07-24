@@ -9,6 +9,10 @@ export default {
 	],
 	theme: {
 		extend: {
+			fontFamily: {
+				'montserrat': ['var(--font-montserrat)', 'Montserrat Alternates', 'sans-serif'],
+				'inter': ['var(--font-inter)', 'Inter', 'sans-serif'],
+			},
 			colors: {
 				background: 'var(--background)',
 				foreground: 'var(--foreground)',

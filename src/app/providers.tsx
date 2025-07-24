@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { MiniAppProvider } from "@neynar/react";
+import WalletProvider from "~/providers/wallet";
 
 const WagmiProvider = dynamic(
   () => import("~/components/providers/WagmiProvider"),
@@ -12,8 +13,10 @@ const WagmiProvider = dynamic(
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <WagmiProvider>
-      <MiniAppProvider analyticsEnabled={true}>{children}</MiniAppProvider>
-    </WagmiProvider>
+    <WalletProvider>
+      <WagmiProvider>
+        <MiniAppProvider analyticsEnabled={true}>{children}</MiniAppProvider>
+      </WagmiProvider>
+    </WalletProvider>
   );
 }

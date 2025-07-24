@@ -51,7 +51,7 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: "Inter", Helvetica, Arial, sans-serif;
+  font-family: var(--font-inter), "Inter", Helvetica, Arial, sans-serif;
 }
 
 * {
