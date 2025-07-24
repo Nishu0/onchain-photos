@@ -2,17 +2,68 @@
 
 import Head from 'next/head';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { usePrivy } from "@privy-io/react-auth";
+import { useAccount } from "wagmi";
 import WalletConnector from './wallet-connector';
 import CreateMemoryForm from './CreateMemoryForm';
+import Feed from './Feed';
 
 export default function Home() {
   const { authenticated, login } = usePrivy();
+  const { address } = useAccount();
   const [showForm, setShowForm] = useState(false);
+  const [showFeed, setShowFeed] = useState(false);
+  const [user, setUser] = useState<{
+    id: string;
+    wallet_address: string;
+    created_at: string;
+    updated_at: string;
+  } | null>(null);
+  const [isCreatingUser, setIsCreatingUser] = useState(false);
+
+  // Create user when wallet connects
+  useEffect(() => {
+    const createUser = async () => {
+      if (authenticated && address && !user && !isCreatingUser) {
+        console.log('Creating user for address:', address);
+        setIsCreatingUser(true);
+        try {
+          const response = await fetch('/api/users', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ wallet_address: address }),
+          });
+
+          console.log('User API response status:', response.status);
+          
+          if (response.ok) {
+            const data = await response.json();
+            setUser(data.user);
+            console.log('User created/retrieved:', data.user);
+          } else {
+            const errorData = await response.text();
+            console.error('Failed to create/retrieve user:', errorData);
+          }
+        } catch (error) {
+          console.error('Error creating user:', error);
+        } finally {
+          setIsCreatingUser(false);
+        }
+      }
+    };
+
+    createUser();
+  }, [authenticated, address]); // Removed user and isCreatingUser from dependencies
 
   if (showForm) {
-    return <CreateMemoryForm onClose={() => setShowForm(false)} />;
+    return <CreateMemoryForm onClose={() => setShowForm(false)} user={user} />;
+  }
+
+  if (showFeed) {
+    return <Feed onClose={() => setShowFeed(false)} />;
   }
 
   return (
@@ -64,12 +115,16 @@ export default function Home() {
               ) : (
                 <button 
                   onClick={() => setShowForm(true)}
-                  className="flex items-center justify-center bg-green-500 border-2 border-green-500 px-6 py-3 rounded-full text-white font-semibold text-base hover:bg-green-600 transition-colors cursor-pointer"
+                  disabled={isCreatingUser || !user}
+                  className="flex items-center justify-center bg-green-500 border-2 border-green-500 px-6 py-3 rounded-full text-white font-semibold text-base hover:bg-green-600 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Start Creating Memories
+                  {isCreatingUser ? 'Setting up...' : 'Start Creating Memories'}
                 </button>
               )}
-              <button className="flex items-center justify-center bg-white border-2 border-purple-500 px-6 py-3 rounded-full text-purple-600 font-semibold text-base hover:bg-purple-50 transition-colors">
+              <button 
+                onClick={() => setShowFeed(true)}
+                className="flex items-center justify-center bg-white border-2 border-purple-500 px-6 py-3 rounded-full text-purple-600 font-semibold text-base hover:bg-purple-50 transition-colors"
+              >
                 Explore Your Memories
               </button>
             </div>
